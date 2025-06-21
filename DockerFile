@@ -1,0 +1,25 @@
+# Use a base image with Java and Maven pre-installed
+FROM maven:3.9.4-eclipse-temurin-17 AS builder
+
+# Set working directory inside container
+WORKDIR /app
+
+# Copy all project files into container
+COPY . .
+
+# Package the application (runs clean install, builds the jar)
+RUN mvn clean package -DskipTests
+
+# Use a lightweight Java runtime image for running the app
+FROM eclipse-temurin:17-jdk-jammy
+
+WORKDIR /app
+
+# Copy the built jar file from the previous stage
+COPY --from=builder /app/target/*.jar app.jar
+
+# Expose port (optional but good for clarity)
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

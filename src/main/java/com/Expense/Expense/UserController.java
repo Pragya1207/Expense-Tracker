@@ -25,8 +25,17 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    @GetMapping("/{userName}")
+    public UserDto getUserByUserName(@PathVariable String userName) {
+        return userService.getUserByUserName(userName);
+    }
+
+    @GetMapping("/check-username/{userName}")
+    public ResponseEntity<String> isUserNameTaken(@PathVariable String userName) {
+        boolean isPresent= userService.isUserNameTaken(userName);
+        if(isPresent==true){
+            return new ResponseEntity<>("user name already exist",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("userName not in use",HttpStatus.OK);
     }
 }

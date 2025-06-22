@@ -48,10 +48,14 @@ public class UserService {
         return userRepository.findAll().stream().map(this::toDto).collect(Collectors.toList());
     }
 
-    public UserDto getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+    public UserDto getUserByUserName(String userName) {
+        User user = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userName: " + userName));
         return toDto(user);
+    }
+
+    public boolean isUserNameTaken(String userName) {
+        return userRepository.findByUserName(userName).isPresent();
     }
 
     public UserDto toDto(User user) {
